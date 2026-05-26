@@ -1,0 +1,105 @@
+---
+- name: Look up existing Outbound REST Message
+  servicenow.itsm.api_info:
+    instance:
+      host: "{{ snow_instance }}"
+      username: "{{ snow_username }}"
+      password: "{{ snow_password }}"
+    resource: sys_rest_message
+    query_params:
+      sysparm_query: "name={{ snow_rest_message_name }}"
+  register: rest_message_lookup
+
+- name: Create Outbound REST Message if absent
+  servicenow.itsm.api:
+    instance:
+      host: "{{ snow_instance }}"
+      username: "{{ snow_username }}"
+      password: "{{ snow_password }}"
+    resource: sys_rest_message
+    action: post
+    data:
+      name: "{{ snow_rest_message_name }}"
+      rest_endpoint: "{{ snow_eda_endpoint }}"
+      description: "{{ snow_rest_message_description }}"
+      authentication_type: "no_authentication"
+  when: rest_message_lookup.record | length == 0
+  register: rest_message_created
+
+- name: Set fact for the REST message sys_id
+  ansible.builtin.set_fact:
+    snow_rest_message_sys_id: >-
+      {{ (rest_message_lookup.record[0].sys_id
+          if rest_message_lookup.record | length > 0
+          else rest_message_created.record.sys_id) }}
+
+- name: Look up existing POST function for the REST message
+  servicenow.itsm.api_info:
+    instance:
+      host: "{{ snow_instance }}"
+      username: "{{ snow_username }}"
+      password: "{{ snow_password }}"
+    resource: sys_rest_message_fn
+    query_params:
+      sysparm_query: "rest_message={{ snow_rest_message_sys_id }}^function_name={{ snow_rest_message_function }}"
+  register: rest_fn_lookup
+
+- name: Create POST function if absent
+  servicenow.itsm.api:
+    instance:
+      host: "{{ snow_instance }}"
+      username: "{{ snow_username }}"
+      password: "{{ snow_password }}"
+    resource: sys_rest_message_fn
+    action: post
+    data:
+      rest_message: "{{ snow_rest_message_sys_id }}"
+      function_name: "{{ snow_rest_message_function }}"
+      http_method: "post"
+      rest_endpoint: "{{ snow_eda_endpoint }}"
+      content: '{"placeholder":"set at runtime by business rule"}'
+  when: rest_fn_lookup.record | length == 0
+  register: rest_fn_created
+
+- name: Set fact for the REST function sys_id
+  ansible.builtin.set_fact:
+    snow_rest_fn_sys_id: >-
+      {{ (rest_fn_lookup.record[0].sys_id
+          if rest_fn_lookup.record | length > 0
+          else rest_fn_created.record.sys_id) }}
+
+- name: Ensure Authorization header on the POST function
+  servicenow.itsm.api:
+    instance:
+      host: "{{ snow_instance }}"
+      username: "{{ snow_username }}"
+      password: "{{ snow_password }}"
+    resource: sys_rest_message_fn_headers
+    action: post
+    data:
+      rest_message_function: "{{ snow_rest_fn_sys_id }}"
+      name: "Authorization"
+      value: "{{ snow_eda_token }}"
+  register: auth_header
+  changed_when: auth_header.record is defined
+  failed_when:
+    - auth_header.record is not defined
+    - "'Duplicate' not in (auth_header.msg | default(''))"
+
+- name: Ensure Content-Type header on the POST function
+  servicenow.itsm.api:
+    instance:
+      host: "{{ snow_instance }}"
+      username: "{{ snow_username }}"
+      password: "{{ snow_password }}"
+    resource: sys_rest_message_fn_headers
+    action: post
+    data:
+      rest_message_function: "{{ snow_rest_fn_sys_id }}"
+      name: "Content-Type"
+      value: "application/json"
+  register: ctype_header
+  changed_when: ctype_header.record is defined
+  failed_when:
+    - ctype_header.record is not defined
+    - "'Duplicate' not in (ctype_header.msg | default(''))"
