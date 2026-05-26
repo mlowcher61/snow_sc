@@ -1,0 +1,21 @@
+---
+- name: Listen for ServiceNow catalog requests
+  hosts: all
+  sources:
+    - ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 5000
+  rules:
+    - name: Run provisioning workflow on approved request
+      condition: event.payload.short_description is defined and event.payload.state == "-5"
+      action:
+        run_workflow_template:
+          name: "ServiceNow Provisioning Workflow"
+          organization: "Default"
+
+    - name: Fallback to job template when no workflow match
+      condition: event.payload.short_description is defined and event.payload.state != "-5"
+      action:
+        run_job_template:
+          name: "ServiceNow Provisioning Job"
+          organization: "Default"
