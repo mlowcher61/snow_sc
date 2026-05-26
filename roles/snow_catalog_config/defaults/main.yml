@@ -1,0 +1,27 @@
+---
+# --- ServiceNow connection (supplied via custom credential / survey at runtime) ---
+# snow_instance, snow_username, snow_password come from the SNOW custom credential.
+
+# --- EDA endpoint (output of the EDA config role; pasted in here) ---
+snow_eda_endpoint: ""           # e.g. https://<aap>/eda-event-streams/api/eda/v1/external_event_stream/<uuid>/post/
+snow_eda_token: ""              # shared token, from custom credential (matches EDA credential)
+
+# --- Outbound REST message ---
+snow_rest_message_name: "EDA Event Stream"
+snow_rest_message_function: "post"
+snow_rest_message_description: "Posts approved sc_req_item events to Event-Driven Ansible."
+
+# --- Business rule ---
+snow_business_rule_name: "Notify EDA on Approved Request"
+snow_business_rule_table: "sc_req_item"
+snow_business_rule_order: 100
+# Encoded query for the filter conditions (loop prevention + scoping).
+# Replace <REQUESTED_FOR_SYS_ID> and <SERVICE_ACCOUNT_SYS_ID> for your instance.
+snow_business_rule_filter: >-
+  request.requested_for=<REQUESTED_FOR_SYS_ID>^stage=request_approved^state=-5^sys_updated_by!=service
+
+# --- Catalog item ---
+snow_catalog_item_name: "EDA Automation Request"
+snow_catalog_item_short_description: "Request automation handled by Event-Driven Ansible."
+snow_catalog_item_category_sys_id: ""   # sys_id of the target sc_category
+snow_catalog_item_active: true

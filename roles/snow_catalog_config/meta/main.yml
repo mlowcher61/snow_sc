@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  role_name: snow_catalog_config
+  author: mlowcher61
+  description: Configure ServiceNow Outbound REST Message, Business Rule, and Catalog Item to trigger Event-Driven Ansible.
+  license: MIT
+  min_ansible_version: "2.15"
+  galaxy_tags:
+    - servicenow
+    - eda
+    - itsm
+collections:
+  - servicenow.itsm
+dependencies: []
