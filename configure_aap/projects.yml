@@ -1,0 +1,14 @@
+---
+- name: Create the controller project for this repository
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: snow_sc project
+      ansible.platform.project:
+        name: "ServiceNow EDA Integration"
+        organization: "Default"
+        scm_type: git
+        scm_url: "https://github.com/mlowcher61/snow_sc.git"
+        scm_branch: main
+        scm_update_on_launch: true
+        state: present

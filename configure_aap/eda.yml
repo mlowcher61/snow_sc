@@ -1,0 +1,8 @@
+---
+- name: EDA project and rulebook activation as config-as-code
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Run the EDA configuration role
+      ansible.builtin.import_role:
+        name: eda_snow_config
