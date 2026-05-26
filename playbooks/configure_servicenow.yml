@@ -1,0 +1,6 @@
+---
+- name: Configure ServiceNow Service Catalog integration for EDA
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: snow_catalog_config
