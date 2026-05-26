@@ -1,5 +1,7 @@
 # snow_sc — ServiceNow Service Catalog → Event-Driven Ansible
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Trigger Ansible Automation Platform automation from a ServiceNow Service Catalog request. When an
 approved Requested Item reaches **Work in Progress**, a ServiceNow Business Rule posts the event to
 an EDA event stream, and a rulebook runs a job/workflow template.
