@@ -1,0 +1,53 @@
+---
+- name: Create job templates with surveys
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Configure ServiceNow Catalog job template
+      ansible.platform.job_template:
+        name: "Configure ServiceNow Catalog"
+        organization: "Default"
+        project: "ServiceNow EDA Integration"
+        playbook: "playbooks/configure_servicenow.yml"
+        credentials:
+          - "ServiceNow Connection"
+          - "EDA Event Stream Token"
+        ask_variables_on_launch: false
+        survey_enabled: true
+        survey_spec:
+          name: "ServiceNow Catalog inputs"
+          description: "Non-secret inputs for the ServiceNow configuration."
+          spec:
+            - question_name: "EDA event stream endpoint URL"
+              variable: "snow_eda_endpoint"
+              type: text
+              required: true
+            - question_name: "Catalog item category sys_id"
+              variable: "snow_catalog_item_category_sys_id"
+              type: text
+              required: true
+        state: present
+
+    - name: Configure EDA job template
+      ansible.platform.job_template:
+        name: "Configure EDA"
+        organization: "Default"
+        project: "ServiceNow EDA Integration"
+        playbook: "playbooks/configure_eda.yml"
+        credentials:
+          - "EDA Event Stream Token"
+        survey_enabled: true
+        survey_spec:
+          name: "EDA inputs"
+          description: "Non-secret inputs for the EDA configuration."
+          spec:
+            - question_name: "EDA controller host"
+              variable: "eda_host"
+              type: text
+              required: true
+            - question_name: "EDA organization"
+              variable: "eda_organization"
+              type: text
+              required: false
+              default: "Default"
+        state: present

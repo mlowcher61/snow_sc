@@ -1,0 +1,6 @@
+---
+- name: Configure Event-Driven Ansible for ServiceNow catalog events
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: eda_snow_config

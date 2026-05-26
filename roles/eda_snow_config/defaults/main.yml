@@ -1,0 +1,22 @@
+---
+# --- EDA controller connection (supplied via custom credential / survey) ---
+# eda_host, eda_username, eda_password come from the AAP/EDA credential.
+eda_validate_certs: true
+eda_organization: "Default"
+
+# --- Shared token (matches the SNOW Authorization header) ---
+eda_token: ""
+
+# --- Object names ---
+eda_credential_type_name: "ServiceNow Event Stream Token"
+eda_credential_name: "ServiceNow Event Stream Credential"
+eda_event_stream_name: "ServiceNow Catalog Event Stream"
+eda_create_event_stream: true
+
+# --- Project + activation ---
+eda_project_name: "ServiceNow Catalog Integration"
+eda_project_url: "https://github.com/mlowcher61/snow_sc.git"
+eda_project_branch: "main"
+eda_rulebook_name: "servicenow_catalog.yml"
+eda_activation_name: "ServiceNow Catalog Activation"
+eda_decision_environment: "Default Decision Environment"

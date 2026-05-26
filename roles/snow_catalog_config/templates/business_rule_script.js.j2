@@ -1,0 +1,21 @@
+(function executeRule(current, previous /*null when async*/) {
+    try {
+        // Line below references the Outbound REST Message created by Ansible.
+        var request = new sn_ws.RESTMessageV2('{{ snow_rest_message_name }}', '{{ snow_rest_message_function }}');
+
+        var payload = {
+            "number": current.number.toString(),
+            "sys_id": current.sys_id.toString(),
+            "short_description": current.short_description.toString(),
+            "requested_for": current.request.requested_for.getDisplayValue(),
+            "stage": current.stage.toString(),
+            "state": current.state.toString()
+        };
+
+        request.setRequestBody(JSON.stringify(payload));
+        var response = request.execute();
+        gs.info('[SNOW->EDA] Posted ' + current.number + ' status=' + response.getStatusCode());
+    } catch (ex) {
+        gs.error('[SNOW->EDA] Failed to post ' + current.number + ': ' + ex.getMessage());
+    }
+})(current, previous);

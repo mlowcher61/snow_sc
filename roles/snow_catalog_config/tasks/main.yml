@@ -1,0 +1,21 @@
+---
+- name: Assert required ServiceNow connection and EDA inputs are present
+  ansible.builtin.assert:
+    that:
+      - snow_instance is defined and snow_instance | length > 0
+      - snow_username is defined and snow_username | length > 0
+      - snow_password is defined and snow_password | length > 0
+      - snow_eda_endpoint | length > 0
+      - snow_eda_token | length > 0
+    fail_msg: >-
+      Missing required inputs. Provide snow_instance/username/password (SNOW credential)
+      and snow_eda_endpoint + snow_eda_token (from the EDA config role).
+
+- name: Configure the Outbound REST Message
+  ansible.builtin.include_tasks: outbound_rest.yml
+
+- name: Configure the Business Rule
+  ansible.builtin.include_tasks: business_rule.yml
+
+- name: Configure the Catalog Item
+  ansible.builtin.include_tasks: catalog_item.yml

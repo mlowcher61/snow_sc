@@ -1,0 +1,36 @@
+---
+- name: Look up existing Catalog Item
+  servicenow.itsm.api_info:
+    instance:
+      host: "{{ snow_instance }}"
+      username: "{{ snow_username }}"
+      password: "{{ snow_password }}"
+    resource: sc_cat_item
+    query_params:
+      sysparm_query: "name={{ snow_catalog_item_name }}"
+  register: catalog_item_lookup
+
+- name: Create Catalog Item if absent
+  servicenow.itsm.api:
+    instance:
+      host: "{{ snow_instance }}"
+      username: "{{ snow_username }}"
+      password: "{{ snow_password }}"
+    resource: sc_cat_item
+    action: post
+    data:
+      name: "{{ snow_catalog_item_name }}"
+      short_description: "{{ snow_catalog_item_short_description }}"
+      category: "{{ snow_catalog_item_category_sys_id }}"
+      active: "{{ snow_catalog_item_active | string | lower }}"
+  when: catalog_item_lookup.record | length == 0
+  register: catalog_item_created
+
+- name: Report the Catalog Item sys_id (needed for the manual Flow Designer link)
+  ansible.builtin.debug:
+    msg: >-
+      Catalog Item sys_id =
+      {{ catalog_item_lookup.record[0].sys_id
+         if catalog_item_lookup.record | length > 0
+         else catalog_item_created.record.sys_id }}.
+      Link your Flow Designer flow on the Process Engine tab — see docs/flow_designer_manual_steps.md.

@@ -1,0 +1,13 @@
+---
+galaxy_info:
+  role_name: eda_snow_config
+  author: mlowcher61
+  description: Configure Event-Driven Ansible credential, event stream, project, and rulebook activation for ServiceNow events.
+  license: MIT
+  min_ansible_version: "2.15"
+  galaxy_tags:
+    - eda
+    - servicenow
+collections:
+  - ansible.eda
+dependencies: []
