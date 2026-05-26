@@ -1,0 +1,85 @@
+---
+- name: Assert required EDA inputs are present
+  ansible.builtin.assert:
+    that:
+      - eda_host is defined and eda_host | length > 0
+      - eda_username is defined and eda_username | length > 0
+      - eda_password is defined and eda_password | length > 0
+      - eda_token | length > 0
+    fail_msg: "Provide eda_host/username/password (EDA credential) and eda_token."
+
+- name: Create the ServiceNow event-stream credential type
+  ansible.eda.credential_type:
+    controller_host: "{{ eda_host }}"
+    controller_username: "{{ eda_username }}"
+    controller_password: "{{ eda_password }}"
+    validate_certs: "{{ eda_validate_certs }}"
+    name: "{{ eda_credential_type_name }}"
+    state: present
+    inputs:
+      fields:
+        - id: token
+          label: Token
+          type: string
+          secret: true
+    injectors:
+      extra_vars:
+        servicenow_token: "{{ '{{ token }}' }}"
+
+- name: Create the ServiceNow event-stream credential
+  ansible.eda.credential:
+    controller_host: "{{ eda_host }}"
+    controller_username: "{{ eda_username }}"
+    controller_password: "{{ eda_password }}"
+    validate_certs: "{{ eda_validate_certs }}"
+    name: "{{ eda_credential_name }}"
+    credential_type_name: "{{ eda_credential_type_name }}"
+    organization_name: "{{ eda_organization }}"
+    state: present
+    inputs:
+      token: "{{ eda_token }}"
+
+- name: Create the ServiceNow event stream
+  ansible.eda.event_stream:
+    controller_host: "{{ eda_host }}"
+    controller_username: "{{ eda_username }}"
+    controller_password: "{{ eda_password }}"
+    validate_certs: "{{ eda_validate_certs }}"
+    name: "{{ eda_event_stream_name }}"
+    credential_name: "{{ eda_credential_name }}"
+    organization_name: "{{ eda_organization }}"
+    state: present
+  when: eda_create_event_stream | bool
+  register: eda_event_stream
+
+- name: Show the event stream endpoint to paste into ServiceNow
+  ansible.builtin.debug:
+    msg: >-
+      Event stream endpoint = {{ eda_event_stream.event_stream.url | default('see EDA UI > Event Streams') }}.
+      Use this as snow_eda_endpoint when running the ServiceNow config.
+  when: eda_create_event_stream | bool
+
+- name: Create the EDA project from this repository
+  ansible.eda.project:
+    controller_host: "{{ eda_host }}"
+    controller_username: "{{ eda_username }}"
+    controller_password: "{{ eda_password }}"
+    validate_certs: "{{ eda_validate_certs }}"
+    name: "{{ eda_project_name }}"
+    url: "{{ eda_project_url }}"
+    organization_name: "{{ eda_organization }}"
+    state: present
+
+- name: Create the rulebook activation
+  ansible.eda.rulebook_activation:
+    controller_host: "{{ eda_host }}"
+    controller_username: "{{ eda_username }}"
+    controller_password: "{{ eda_password }}"
+    validate_certs: "{{ eda_validate_certs }}"
+    name: "{{ eda_activation_name }}"
+    project_name: "{{ eda_project_name }}"
+    rulebook_name: "{{ eda_rulebook_name }}"
+    decision_environment_name: "{{ eda_decision_environment }}"
+    organization_name: "{{ eda_organization }}"
+    enabled: true
+    state: present
