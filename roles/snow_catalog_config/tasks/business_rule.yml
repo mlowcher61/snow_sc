@@ -1,0 +1,50 @@
+---
+- name: Render the business rule advanced script
+  ansible.builtin.set_fact:
+    snow_business_rule_script: "{{ lookup('ansible.builtin.template', 'business_rule_script.js.j2') }}"
+
+- name: Look up existing Business Rule
+  servicenow.itsm.api_info:
+    instance:
+      host: "{{ snow_instance }}"
+      username: "{{ snow_username }}"
+      password: "{{ snow_password }}"
+    resource: sys_script
+    query_params:
+      sysparm_query: "name={{ snow_business_rule_name }}^collection={{ snow_business_rule_table }}"
+  register: business_rule_lookup
+
+- name: Create Business Rule if absent
+  servicenow.itsm.api:
+    instance:
+      host: "{{ snow_instance }}"
+      username: "{{ snow_username }}"
+      password: "{{ snow_password }}"
+    resource: sys_script
+    action: post
+    data:
+      name: "{{ snow_business_rule_name }}"
+      collection: "{{ snow_business_rule_table }}"
+      active: "true"
+      when: "after"
+      action_update: "true"
+      order: "{{ snow_business_rule_order }}"
+      filter_condition: "{{ snow_business_rule_filter }}"
+      advanced: "true"
+      script: "{{ snow_business_rule_script }}"
+  when: business_rule_lookup.record | length == 0
+  register: business_rule_created
+
+- name: Update Business Rule script if it already exists
+  servicenow.itsm.api:
+    instance:
+      host: "{{ snow_instance }}"
+      username: "{{ snow_username }}"
+      password: "{{ snow_password }}"
+    resource: sys_script
+    action: patch
+    sys_id: "{{ business_rule_lookup.record[0].sys_id }}"
+    data:
+      filter_condition: "{{ snow_business_rule_filter }}"
+      script: "{{ snow_business_rule_script }}"
+  when: business_rule_lookup.record | length > 0
