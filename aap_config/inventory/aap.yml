@@ -1,0 +1,9 @@
+---
+# The CaC playbook runs locally on the control node and talks to AAP over the
+# API — so the only host it needs is localhost. All AAP connection details come
+# from group_vars/all.yml (env-var lookups), never from this file.
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+      ansible_python_interpreter: "{{ ansible_playbook_python }}"

@@ -27,14 +27,14 @@ an EDA event stream, and a rulebook runs a job/workflow template.
 | Flow Designer flow | **manual** | see `docs/flow_designer_manual_steps.md` |
 | EDA credential type / credential / event stream | `roles/eda_snow_config` | via `ansible.eda` |
 | EDA project + rulebook activation | `roles/eda_snow_config` | references this repo |
-| AAP credential types, project, job templates, surveys | `configure_aap/` | via `ansible.platform` |
+| AAP org, credential types, credentials, project, job templates, surveys | `aap_config/` | via `infra.aap_configuration` |
 
 ## Prerequisites
 - AAP 2.5 (Controller + EDA), ServiceNow instance with admin, `ansible-core` ≥ 2.15.
 - `ansible-galaxy collection install -r collections/requirements.yml`
 
 ## Deploy (UI / config-as-code)
-1. Bootstrap AAP: see `configure_aap/README.md`.
+1. Bootstrap AAP: see `aap_config/README.md`.
 2. Run **Configure EDA** first — copy the event stream endpoint it prints.
 3. Run **Configure ServiceNow Catalog**, providing that endpoint in the survey.
 4. Build and link the Flow Designer flow: `docs/flow_designer_manual_steps.md`.

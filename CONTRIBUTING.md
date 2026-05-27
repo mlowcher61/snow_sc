@@ -8,11 +8,11 @@ covers how to set up, the conventions this repo follows, and how to submit chang
 - **Target Ansible Automation Platform 2.5**, not bare `ansible-core`. Assume execution
   environments, the Controller, and EDA.
 - Prefer **certified/validated collections** (`servicenow.itsm`, `ansible.eda`,
-  `ansible.platform`) over community equivalents.
+  `ansible.platform`, `infra.aap_configuration`) over community equivalents.
 - **No secrets in git.** Credentials are supplied at runtime via AAP custom credential types (see
-  `configure_aap/credential_types.yml`). Never commit tokens, passwords, or vault files. The only
-  token strings in this repo are obvious placeholders (e.g. `ABC123`).
-- **Config-as-code** lives in `configure_aap/` so a new user can stand up the AAP objects on their
+  `aap_config/files/controller_credential_types.yml`). Never commit tokens, passwords, or vault
+  files. The only token strings in this repo are obvious placeholders (e.g. `ABC123`).
+- **Config-as-code** lives in `aap_config/` so a new user can stand up the AAP objects on their
   own platform.
 
 ## Setup

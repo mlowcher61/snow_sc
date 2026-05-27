@@ -7,7 +7,7 @@ What does this PR change, and why?
 - [ ] `roles/snow_catalog_config` (ServiceNow side)
 - [ ] `roles/eda_snow_config` (EDA side)
 - [ ] `rulebooks/servicenow_catalog.yml`
-- [ ] `configure_aap/` (config-as-code)
+- [ ] `aap_config/` (config-as-code)
 - [ ] Docs / README
 
 ## How verified

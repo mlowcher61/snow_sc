@@ -1,0 +1,14 @@
+---
+# Collections required to run the snow_sc AAP Configuration-as-Code.
+#
+# infra.aap_configuration is the certified Configuration-as-Code engine; its
+# `dispatch` role applies every data structure under files/. ansible.platform
+# and ansible.eda provide the underlying platform/controller and EDA modules
+# the dispatch role calls.
+collections:
+  - name: infra.aap_configuration
+    version: ">=2.5.0"
+  - name: ansible.platform
+    version: ">=2.5.0"
+  - name: ansible.eda
+    version: ">=2.0.0"

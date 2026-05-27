@@ -1,0 +1,56 @@
+---
+# Consumed by the infra.aap_configuration.controller_job_templates role.
+# NOTE: the role's list variable is `controller_templates` (not
+# `controller_job_templates`) — a known collection quirk.
+#
+# Two JTs: one configures the ServiceNow side (Outbound REST Message, Business
+# Rule, Catalog Item), the other configures the EDA side (credential type,
+# credential, event stream, project, rulebook activation). Custom credentials
+# are attached here so secrets are supplied at launch, never surveyed or
+# committed.
+controller_templates:
+  - name: "{{ jt_configure_eda }}"
+    job_type: run
+    organization: "{{ my_organization }}"
+    project: "{{ project_name }}"
+    playbook: playbooks/configure_eda.yml
+    credentials:
+      - "{{ cred_eda_token }}"
+    survey_enabled: true
+    survey_spec:
+      name: "EDA inputs"
+      description: "Non-secret inputs for the EDA configuration."
+      spec:
+        - question_name: "EDA controller host"
+          question_description: "Base URL of the AAP EDA controller, e.g. https://aap.example.com"
+          variable: eda_host
+          type: text
+          required: true
+        - question_name: "EDA organization"
+          variable: eda_organization
+          type: text
+          required: false
+          default: "Default"
+
+  - name: "{{ jt_configure_snow }}"
+    job_type: run
+    organization: "{{ my_organization }}"
+    project: "{{ project_name }}"
+    playbook: playbooks/configure_servicenow.yml
+    credentials:
+      - "{{ cred_snow }}"
+      - "{{ cred_eda_token }}"
+    survey_enabled: true
+    survey_spec:
+      name: "ServiceNow Catalog inputs"
+      description: "Non-secret inputs for the ServiceNow configuration."
+      spec:
+        - question_name: "EDA event stream endpoint URL"
+          question_description: "Endpoint printed by the Configure EDA job."
+          variable: snow_eda_endpoint
+          type: text
+          required: true
+        - question_name: "Catalog item category sys_id"
+          variable: snow_catalog_item_category_sys_id
+          type: text
+          required: true

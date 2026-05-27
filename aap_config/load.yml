@@ -1,0 +1,40 @@
+---
+# ============================================================================
+# snow_sc — AAP Configuration-as-Code entry point
+# ============================================================================
+# Canonical install path for every snow_sc AAP object. Reads the data
+# structures under files/ and applies them via the certified
+# `infra.aap_configuration.dispatch` role, then verifies the result.
+#
+# Prerequisites:
+#   - AAP 2.5 reachable; a personal API token created in the AAP UI
+#   - Secrets exported as env vars (see group_vars/all.yml)
+#   - collections installed:  ansible-galaxy collection install -r requirements.yml
+#
+# Run:
+#   export AAP_HOSTNAME=https://<aap-host>
+#   export AAP_TOKEN=<personal token from the AAP UI>
+#   export SNOW_INSTANCE=https://<inst>.service-now.com \
+#          SNOW_USERNAME=admin SNOW_PASSWORD=... \
+#          EDA_EVENT_STREAM_TOKEN=...
+#   ansible-playbook -i inventory/ load.yml
+#
+# Re-running is idempotent — every object is keyed by name.
+# ============================================================================
+
+- name: Apply snow_sc AAP configuration
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars_files:
+    - files/gateway_organizations.yml
+    - files/controller_credential_types.yml
+    - files/controller_credentials.yml
+    - files/controller_projects.yml
+    - files/controller_job_templates.yml
+    - files/eda_projects.yml
+  roles:
+    - infra.aap_configuration.dispatch
+
+- name: Verify snow_sc AAP objects exist
+  ansible.builtin.import_playbook: validate.yml

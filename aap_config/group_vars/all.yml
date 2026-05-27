@@ -1,0 +1,46 @@
+---
+# ============================================================================
+# snow_sc — AAP Configuration-as-Code variables
+# ============================================================================
+# Connection details, object names, and secret inputs for the ServiceNow →
+# Event-Driven Ansible integration. NO secrets in version control — every
+# sensitive value is resolved at runtime from an environment variable.
+# ============================================================================
+
+# --- AAP API connection (consumed by infra.aap_configuration.dispatch) -------
+# Create a personal API token in the AAP UI first, then export AAP_TOKEN.
+aap_hostname: "{{ lookup('ansible.builtin.env', 'AAP_HOSTNAME') }}"
+aap_token: "{{ lookup('ansible.builtin.env', 'AAP_TOKEN') }}"
+aap_validate_certs: "{{ lookup('ansible.builtin.env', 'AAP_VALIDATE_CERTS') | default('false', true) | bool }}"
+
+# --- Organization ------------------------------------------------------------
+# Defaults to the built-in "Default" org so the solution applies cleanly on a
+# fresh AAP. Override AAP_ORGANIZATION to target a different org.
+my_organization: "{{ lookup('ansible.builtin.env', 'AAP_ORGANIZATION') | default('Default', true) }}"
+
+# --- Secret inputs (resolved at runtime; never committed) --------------------
+# ServiceNow instance + admin login used by the Configure ServiceNow Catalog JT.
+snow_instance: "{{ lookup('ansible.builtin.env', 'SNOW_INSTANCE') }}"
+snow_username: "{{ lookup('ansible.builtin.env', 'SNOW_USERNAME') | default('admin', true) }}"
+snow_password: "{{ lookup('ansible.builtin.env', 'SNOW_PASSWORD') }}"
+
+# Shared event-stream token — ServiceNow's Outbound REST Message authenticates
+# to the EDA event stream with this, and EDA validates incoming posts with the
+# same value. One export feeds both sides of the integration.
+eda_event_stream_token: "{{ lookup('ansible.builtin.env', 'EDA_EVENT_STREAM_TOKEN') }}"
+
+# --- AAP object names (single source of truth) -------------------------------
+project_name: "ServiceNow EDA Integration"
+project_scm_url: "{{ lookup('ansible.builtin.env', 'SNOW_SC_SCM_URL') | default('https://github.com/mlowcher61/snow_sc.git', true) }}"
+project_scm_branch: "{{ lookup('ansible.builtin.env', 'SNOW_SC_SCM_BRANCH') | default('main', true) }}"
+
+cred_type_snow: "ServiceNow Connection"
+cred_type_eda_token: "EDA Event Stream Token"
+cred_snow: "ServiceNow Connection"
+cred_eda_token: "EDA Event Stream Token"
+
+jt_configure_snow: "Configure ServiceNow Catalog"
+jt_configure_eda: "Configure EDA"
+
+# EDA project (rulebook source) — same repo as the controller project.
+eda_project_name: "ServiceNow EDA Rulebooks"

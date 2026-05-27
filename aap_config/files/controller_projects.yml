@@ -1,0 +1,11 @@
+---
+# Consumed by the infra.aap_configuration.controller_projects role.
+# This repo — source of the configure_servicenow / configure_eda playbooks.
+controller_projects:
+  - name: "{{ project_name }}"
+    organization: "{{ my_organization }}"
+    scm_type: git
+    scm_url: "{{ project_scm_url }}"
+    scm_branch: "{{ project_scm_branch }}"
+    scm_update_on_launch: true
+    scm_clean: true

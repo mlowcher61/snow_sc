@@ -1,0 +1,10 @@
+---
+# Consumed by the infra.aap_configuration.gateway_organizations role.
+# Ensures the target organization exists with the standard Galaxy credentials
+# so content resolves from certified/validated Automation Hub first.
+aap_organizations:
+  - name: "{{ my_organization }}"
+    galaxy_credentials:
+      - Automation Hub - certified
+      - Automation Hub - validated
+      - Ansible Galaxy

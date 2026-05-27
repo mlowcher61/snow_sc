@@ -1,0 +1,13 @@
+---
+# Consumed by the infra.aap_configuration.eda_projects role.
+# Syncs this repo into EDA so the rulebook (rulebooks/servicenow_catalog.yml)
+# is available for a rulebook activation. The deeper EDA setup — credential
+# type, credential, event stream, and the rulebook activation itself — is
+# applied by the "Configure EDA" job template (eda_snow_config role), which
+# needs the event-stream token at launch.
+eda_projects:
+  - name: "{{ eda_project_name }}"
+    description: "ServiceNow catalog rulebooks for Event-Driven Ansible."
+    url: "{{ project_scm_url }}"
+    organization: "{{ my_organization }}"
+    tls_validation: true

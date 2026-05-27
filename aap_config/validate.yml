@@ -1,0 +1,56 @@
+---
+# Post-load validation — confirms every snow_sc object the dispatch run was
+# supposed to create actually exists in AAP. Fails loudly if any are missing,
+# so load.yml can never exit green on a partial apply.
+#
+# Uses the AAP 2.5 controller API path (/api/controller/v2/). Override
+# SNOW_SC_API_BASE for older (/api/v2/) deployments.
+
+- name: Verify snow_sc AAP objects exist
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    api_base: "{{ lookup('ansible.builtin.env', 'SNOW_SC_API_BASE') | default('/api/controller/v2', true) }}"
+    expected:
+      - endpoint: projects
+        names: ["{{ project_name }}"]
+      - endpoint: credential_types
+        names: ["{{ cred_type_snow }}", "{{ cred_type_eda_token }}"]
+      - endpoint: credentials
+        names: ["{{ cred_snow }}", "{{ cred_eda_token }}"]
+      - endpoint: job_templates
+        names: ["{{ jt_configure_snow }}", "{{ jt_configure_eda }}"]
+  tasks:
+    - name: Flatten the expected objects into (endpoint, name) pairs
+      ansible.builtin.set_fact:
+        checks: >-
+          {{ checks | default([]) +
+             [{'endpoint': item.0.endpoint, 'name': item.1}] }}
+      loop: "{{ expected | subelements('names') }}"
+      loop_control:
+        label: "{{ item.1 }}"
+
+    - name: Query AAP for each expected object by name
+      ansible.builtin.uri:
+        url: "{{ aap_hostname }}{{ api_base }}/{{ item.endpoint }}/?name={{ item.name | urlencode }}"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ aap_token }}"
+        validate_certs: "{{ aap_validate_certs }}"
+        return_content: false
+      register: object_checks
+      loop: "{{ checks }}"
+      loop_control:
+        label: "{{ item.endpoint }} → {{ item.name }}"
+
+    - name: Assert every expected object was found
+      ansible.builtin.assert:
+        that:
+          - result.json.count | int > 0
+        fail_msg: "MISSING in AAP: {{ result.item.endpoint }} → '{{ result.item.name }}'"
+        success_msg: "OK: {{ result.item.endpoint }} → '{{ result.item.name }}'"
+      loop: "{{ object_checks.results }}"
+      loop_control:
+        loop_var: result
+        label: "{{ result.item.endpoint }} → {{ result.item.name }}"
