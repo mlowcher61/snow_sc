@@ -4,7 +4,12 @@
 
 **Goal:** Build two reusable Ansible roles (ServiceNow catalog config + EDA config) plus an `ansible.platform` config-as-code layer that wires a ServiceNow Service Catalog item to an Event-Driven Ansible event stream on AAP 2.5.
 
-**Architecture:** `roles/snow_catalog_config` uses `servicenow.itsm.api` to create the Outbound REST Message, Business Rule, and Catalog Item idempotently (query-then-create). `roles/eda_snow_config` uses `ansible.eda` to create the credential type, credential, event stream, project, and rulebook activation. The Flow Designer flow is documented as manual steps. `configure_aap/` provisions the AAP objects and surveys so a new user can deploy on their own platform.
+> **Note (later revision):** the config-as-code layer was renamed `configure_aap/` → `aap_config/`
+> and restructured to the certified `infra.aap_configuration` dispatch pattern. The flat per-object
+> filenames in this plan (`credential_types.yml`, `projects.yml`, `job_templates.yml`, `eda.yml`)
+> are the original design and no longer exist — see `aap_config/README.md` for the current layout.
+
+**Architecture:** `roles/snow_catalog_config` uses `servicenow.itsm.api` to create the Outbound REST Message, Business Rule, and Catalog Item idempotently (query-then-create). `roles/eda_snow_config` uses `ansible.eda` to create the credential type, credential, event stream, project, and rulebook activation. The Flow Designer flow is documented as manual steps. `aap_config/` provisions the AAP objects and surveys so a new user can deploy on their own platform.
 
 **Tech Stack:** Ansible Automation Platform 2.5, collections `servicenow.itsm`, `ansible.eda`, `ansible.platform`; ServiceNow Table API; EDA event streams + rulebooks.
 
@@ -37,11 +42,11 @@
 | `playbooks/configure_servicenow.yml` | Runs role 1 |
 | `playbooks/configure_eda.yml` | Runs role 2 |
 | `rulebooks/servicenow_catalog.yml` | Webhook source + rules → run template by name |
-| `configure_aap/credential_types.yml` | Custom credential types (SNOW conn + shared token) |
-| `configure_aap/projects.yml` | Controller project pointing at this repo |
-| `configure_aap/job_templates.yml` | Two job templates + surveys |
-| `configure_aap/eda.yml` | EDA project + rulebook activation as config-as-code |
-| `configure_aap/README.md` | How to bootstrap AAP |
+| `aap_config/credential_types.yml` | Custom credential types (SNOW conn + shared token) |
+| `aap_config/projects.yml` | Controller project pointing at this repo |
+| `aap_config/job_templates.yml` | Two job templates + surveys |
+| `aap_config/eda.yml` | EDA project + rulebook activation as config-as-code |
+| `aap_config/README.md` | How to bootstrap AAP |
 | `docs/flow_designer_manual_steps.md` | Manual flow build + catalog link |
 | `README.md` | End-to-end beginner-facing guide |
 
@@ -777,14 +782,14 @@ git commit -m "feat(eda): add configure_eda playbook and servicenow_catalog rule
 
 ---
 
-## Task 8: AAP config-as-code (`configure_aap/`)
+## Task 8: AAP config-as-code (`aap_config/`)
 
 **Files:**
-- Create: `configure_aap/credential_types.yml`
-- Create: `configure_aap/projects.yml`
-- Create: `configure_aap/job_templates.yml`
-- Create: `configure_aap/eda.yml`
-- Create: `configure_aap/README.md`
+- Create: `aap_config/credential_types.yml`
+- Create: `aap_config/projects.yml`
+- Create: `aap_config/job_templates.yml`
+- Create: `aap_config/eda.yml`
+- Create: `aap_config/README.md`
 
 > **Verification note:** In AAP 2.5 some controller resources are exposed under `ansible.platform.*` and some still under `ansible.controller.*`. Step 1 confirms the module names; adjust the `module:`/FQCN if a resource is not present in `ansible.platform`.
 
@@ -798,7 +803,7 @@ done
 ```
 Expected: prints which FQCN to use. Update the playbooks below accordingly if any are MISSING.
 
-- [ ] **Step 2: Create `configure_aap/credential_types.yml`**
+- [ ] **Step 2: Create `aap_config/credential_types.yml`**
 
 ```yaml
 ---
@@ -852,7 +857,7 @@ Expected: prints which FQCN to use. Update the playbooks below accordingly if an
         state: present
 ```
 
-- [ ] **Step 3: Create `configure_aap/projects.yml`**
+- [ ] **Step 3: Create `aap_config/projects.yml`**
 
 ```yaml
 ---
@@ -871,7 +876,7 @@ Expected: prints which FQCN to use. Update the playbooks below accordingly if an
         state: present
 ```
 
-- [ ] **Step 4: Create `configure_aap/job_templates.yml`**
+- [ ] **Step 4: Create `aap_config/job_templates.yml`**
 
 ```yaml
 ---
@@ -929,7 +934,7 @@ Expected: prints which FQCN to use. Update the playbooks below accordingly if an
         state: present
 ```
 
-- [ ] **Step 5: Create `configure_aap/eda.yml`**
+- [ ] **Step 5: Create `aap_config/eda.yml`**
 
 ```yaml
 ---
@@ -942,7 +947,7 @@ Expected: prints which FQCN to use. Update the playbooks below accordingly if an
         name: eda_snow_config
 ```
 
-- [ ] **Step 6: Create `configure_aap/README.md`**
+- [ ] **Step 6: Create `aap_config/README.md`**
 
 ```markdown
 # Bootstrapping AAP for the ServiceNow → EDA integration
@@ -965,18 +970,18 @@ Run these once to make the solution deployable from the AAP UI.
 
 Run:
 ```bash
-for p in configure_aap/credential_types.yml configure_aap/projects.yml configure_aap/job_templates.yml configure_aap/eda.yml; do
+for p in aap_config/credential_types.yml aap_config/projects.yml aap_config/job_templates.yml aap_config/eda.yml; do
   ansible-playbook "$p" --syntax-check
 done
-yamllint configure_aap/
-ansible-lint configure_aap/
+yamllint aap_config/
+ansible-lint aap_config/
 ```
 Expected: syntax OK; no lint errors.
 
 - [ ] **Step 8: Commit**
 
 ```bash
-git add configure_aap/
+git add aap_config/
 git commit -m "feat(aap): add config-as-code for credential types, project, job templates, and EDA"
 ```
 
@@ -1065,14 +1070,14 @@ an EDA event stream, and a rulebook runs a job/workflow template.
 | Flow Designer flow | **manual** | see `docs/flow_designer_manual_steps.md` |
 | EDA credential type / credential / event stream | `roles/eda_snow_config` | via `ansible.eda` |
 | EDA project + rulebook activation | `roles/eda_snow_config` | references this repo |
-| AAP credential types, project, job templates, surveys | `configure_aap/` | via `ansible.platform` |
+| AAP credential types, project, job templates, surveys | `aap_config/` | via `ansible.platform` |
 
 ## Prerequisites
 - AAP 2.5 (Controller + EDA), ServiceNow instance with admin, `ansible-core` ≥ 2.15.
 - `ansible-galaxy collection install -r collections/requirements.yml`
 
 ## Deploy (UI / config-as-code)
-1. Bootstrap AAP: see `configure_aap/README.md`.
+1. Bootstrap AAP: see `aap_config/README.md`.
 2. Run **Configure EDA** first — copy the event stream endpoint it prints.
 3. Run **Configure ServiceNow Catalog**, providing that endpoint in the survey.
 4. Build and link the Flow Designer flow: `docs/flow_designer_manual_steps.md`.

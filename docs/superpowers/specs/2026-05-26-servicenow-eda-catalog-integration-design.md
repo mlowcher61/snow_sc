@@ -4,6 +4,12 @@
 **Repository:** `snow_sc` (github.com/mlowcher61)
 **Target platform:** Ansible Automation Platform 2.5 (gateway + Controller + EDA)
 
+> **Note (later revision):** the config-as-code layer was renamed `configure_aap/` → `aap_config/`
+> and restructured to the certified `infra.aap_configuration` dispatch pattern (declarative data
+> structures under `aap_config/files/`). The flat per-object filenames referenced below
+> (`credential_types.yml`, `projects.yml`, …) are the original design and no longer exist — see
+> `aap_config/README.md` for the current layout.
+
 ## Problem
 
 A ServiceNow Service Catalog item, once ordered and approved, must trigger automation in
@@ -107,7 +113,7 @@ confirmed during implementation.
 Webhook source fed by the event stream. Rules match on payload fields (e.g. `short_description`)
 and fire `run_workflow_template` / `run_job_template` **by name** (config-as-code friendly).
 
-### Config-as-code — `configure_aap/` (via `ansible.platform`)
+### Config-as-code — `aap_config/` (via `ansible.platform`)
 Creates:
 - Two **custom credential types**: ServiceNow connection (host/username/password) and shared
   event-stream token.
@@ -123,7 +129,7 @@ password injected via the ServiceNow custom credential type.
 
 ### `README.md`
 Beginner-facing, end to end: ordering sequence diagram, prerequisites, deployment order (EDA first,
-then ServiceNow), the manual Flow Designer steps, and how to bootstrap AAP from `configure_aap/`.
+then ServiceNow), the manual Flow Designer steps, and how to bootstrap AAP from `aap_config/`.
 
 ## Proposed Repository Layout
 
@@ -149,7 +155,7 @@ snow_sc/
 │   └── configure_eda.yml
 ├── rulebooks/
 │   └── servicenow_catalog.yml
-├── configure_aap/
+├── aap_config/
 │   ├── README.md
 │   ├── credential_types.yml
 │   ├── projects.yml
