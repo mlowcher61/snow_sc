@@ -51,6 +51,7 @@ cred_eda_token: "EDA Event Stream Token"
 jt_configure_snow: "Configure ServiceNow Catalog"
 jt_configure_eda: "Configure EDA"
 jt_smoke_test: "AAP Localhost Smoke Test"
+jt_eda_credential_smoke_test: "AAP EDA Credential Smoke Test"
 
 # EDA project (rulebook source) — same repo as the controller project.
 eda_project_name: "ServiceNow EDA Rulebooks"
