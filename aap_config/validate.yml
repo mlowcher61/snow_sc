@@ -18,9 +18,9 @@
       - endpoint: inventories
         names: ["{{ controller_inventory_localhost }}"]
       - endpoint: credential_types
-        names: ["{{ cred_type_snow }}", "{{ cred_type_eda_token }}"]
+        names: ["{{ cred_type_snow }}", "{{ cred_type_eda_connection }}", "{{ cred_type_eda_token }}"]
       - endpoint: credentials
-        names: ["{{ cred_snow }}", "{{ cred_eda_token }}"]
+        names: ["{{ cred_snow }}", "{{ cred_eda_connection }}", "{{ cred_eda_token }}"]
       - endpoint: job_templates
         names: ["{{ jt_configure_snow }}", "{{ jt_configure_eda }}"]
   tasks:

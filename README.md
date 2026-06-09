@@ -55,7 +55,8 @@ ansible-playbook playbooks/configure_servicenow.yml \
 
 ## Secrets
 Secrets are supplied at launch via AAP **custom credentials** (ServiceNow Connection + EDA Event
-Stream Token) — never vaulted in git. The same token must match on both sides.
+Stream Token + EDA Controller Connection) — never vaulted in git. The same token must match on
+both sides.
 
 ## Configuration
 All names, filters, and payload fields are in each role's `defaults/main.yml`. Override via survey

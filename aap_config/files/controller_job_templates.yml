@@ -16,17 +16,13 @@ controller_templates:
     project: "{{ project_name }}"
     playbook: playbooks/configure_eda.yml
     credentials:
+      - "{{ cred_eda_connection }}"
       - "{{ cred_eda_token }}"
     survey_enabled: true
     survey_spec:
       name: "EDA inputs"
       description: "Non-secret inputs for the EDA configuration."
       spec:
-        - question_name: "EDA controller host"
-          question_description: "Base URL of the AAP EDA controller, e.g. https://aap.example.com"
-          variable: eda_host
-          type: text
-          required: true
         - question_name: "EDA organization"
           variable: eda_organization
           type: text

@@ -29,6 +29,11 @@ snow_password: "{{ lookup('ansible.builtin.env', 'SNOW_PASSWORD') }}"
 # same value. One export feeds both sides of the integration.
 eda_event_stream_token: "{{ lookup('ansible.builtin.env', 'EDA_EVENT_STREAM_TOKEN') }}"
 
+# EDA controller login used by the Configure EDA job template.
+eda_controller_host: "{{ lookup('ansible.builtin.env', 'EDA_HOSTNAME') | default(aap_hostname, true) }}"
+eda_controller_username: "{{ lookup('ansible.builtin.env', 'EDA_USERNAME') | default('admin', true) }}"
+eda_controller_password: "{{ lookup('ansible.builtin.env', 'EDA_PASSWORD') }}"
+
 # --- AAP object names (single source of truth) -------------------------------
 project_name: "ServiceNow EDA Integration"
 project_scm_url: "{{ lookup('ansible.builtin.env', 'SNOW_SC_SCM_URL') | default('https://github.com/mlowcher61/snow_sc.git', true) }}"
@@ -36,8 +41,10 @@ project_scm_branch: "{{ lookup('ansible.builtin.env', 'SNOW_SC_SCM_BRANCH') | de
 controller_inventory_localhost: "Localhost"
 
 cred_type_snow: "ServiceNow Connection"
+cred_type_eda_connection: "EDA Controller Connection"
 cred_type_eda_token: "EDA Event Stream Token"
 cred_snow: "ServiceNow Connection"
+cred_eda_connection: "EDA Controller Connection"
 cred_eda_token: "EDA Event Stream Token"
 
 jt_configure_snow: "Configure ServiceNow Catalog"

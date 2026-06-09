@@ -18,8 +18,8 @@ aap_config/
 │   └── all.yml       # connection, object names, secret inputs (all via env vars)
 └── files/
     ├── gateway_organizations.yml      # organization + Galaxy credentials
-    ├── controller_credential_types.yml # ServiceNow Connection + EDA Event Stream Token
-    ├── controller_credentials.yml      # the two credentials, filled from env vars
+    ├── controller_credential_types.yml # ServiceNow Connection + EDA Controller Connection + Event Stream Token
+    ├── controller_credentials.yml      # the three credentials, filled from env vars
     ├── controller_projects.yml         # this repo as a controller project
     ├── controller_inventories.yml      # localhost inventory used by the job templates
     ├── controller_job_templates.yml    # Configure EDA + Configure ServiceNow Catalog (+ surveys)
@@ -47,6 +47,8 @@ Nothing secret is committed, surveyed, or vaulted in this repo.
    export AAP_TOKEN=<personal token from the AAP UI>
    export SNOW_INSTANCE=https://<inst>.service-now.com
    export SNOW_USERNAME=admin SNOW_PASSWORD='***'
+   export EDA_HOSTNAME=https://<aap-host>
+   export EDA_USERNAME=admin EDA_PASSWORD='***'
    export EDA_EVENT_STREAM_TOKEN='***'        # same token both sides share
    # optional: AAP_ORGANIZATION (default "Default"), SNOW_SC_SCM_URL, SNOW_SC_SCM_BRANCH
    ```
