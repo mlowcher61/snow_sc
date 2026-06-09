@@ -11,5 +11,7 @@
           - "eda_username defined={{ eda_username is defined and eda_username | string | length > 0 }}"
           - "eda_password defined={{ eda_password is defined and eda_password | string | length > 0 }}"
           - "eda_token defined={{ eda_token is defined and eda_token | string | length > 0 }}"
-  roles:
-    - role: eda_snow_config
+  tasks:
+    - name: Run the EDA configuration role after preflight
+      ansible.builtin.include_role:
+        name: eda_snow_config
