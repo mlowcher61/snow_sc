@@ -38,6 +38,9 @@ Nothing secret is committed, surveyed, or vaulted in this repo.
    ```bash
    ansible-galaxy collection install -r requirements.yml
    ```
+   This repo pins `ansible.controller` to `4.7.10` because newer controller
+   collection releases may reject the legacy `controller_oauthtoken` alias
+   still used internally by `infra.aap_configuration`.
 2. Create a personal API token in the AAP UI, then export the connection + secrets:
    ```bash
    export AAP_HOSTNAME=https://<aap-host>

@@ -32,6 +32,8 @@ an EDA event stream, and a rulebook runs a job/workflow template.
 ## Prerequisites
 - AAP 2.5 (Controller + EDA), ServiceNow instance with admin, `ansible-core` ≥ 2.15.
 - `ansible-galaxy collection install -r collections/requirements.yml`
+- The repo pins `ansible.controller` to `4.7.10` for compatibility with
+  `infra.aap_configuration` controller roles used by `aap_config/load.yml`.
 
 ## Deploy (UI / config-as-code)
 1. Bootstrap AAP: see `aap_config/README.md`.

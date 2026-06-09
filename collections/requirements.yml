@@ -6,6 +6,8 @@ collections:
     version: ">=2.0.0"
   - name: ansible.platform
     version: ">=2.5.0"
+  - name: ansible.controller
+    version: "==4.7.10"
   - name: infra.aap_configuration
     version: ">=2.5.0"
-  - name: ansible.utils 
+  - name: ansible.utils

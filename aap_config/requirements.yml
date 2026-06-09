@@ -4,11 +4,15 @@
 # infra.aap_configuration is the certified Configuration-as-Code engine; its
 # `dispatch` role applies every data structure under files/. ansible.platform
 # and ansible.eda provide the underlying platform/controller and EDA modules
-# the dispatch role calls.
+# the dispatch role calls. ansible.controller is pinned explicitly because the
+# infra.aap_configuration controller roles still rely on the legacy
+# `controller_oauthtoken` alias accepted by the 4.7.x controller collection.
 collections:
   - name: infra.aap_configuration
     version: ">=2.5.0"
   - name: ansible.platform
     version: ">=2.5.0"
+  - name: ansible.controller
+    version: "==4.7.10"
   - name: ansible.eda
     version: ">=2.0.0"
