@@ -1,0 +1,7 @@
+---
+# Consumed by the infra.aap_configuration.controller_inventories role.
+# Controller requires a job template inventory even when the playbook only
+# targets the implicit localhost host.
+controller_inventories:
+  - name: "{{ controller_inventory_localhost }}"
+    organization: "{{ my_organization }}"

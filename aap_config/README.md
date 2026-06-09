@@ -21,6 +21,7 @@ aap_config/
     ├── controller_credential_types.yml # ServiceNow Connection + EDA Event Stream Token
     ├── controller_credentials.yml      # the two credentials, filled from env vars
     ├── controller_projects.yml         # this repo as a controller project
+    ├── controller_inventories.yml      # localhost inventory used by the job templates
     ├── controller_job_templates.yml    # Configure EDA + Configure ServiceNow Catalog (+ surveys)
     └── eda_projects.yml                # this repo as an EDA project (rulebook source)
 ```

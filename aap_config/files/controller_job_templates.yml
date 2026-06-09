@@ -12,6 +12,7 @@ controller_templates:
   - name: "{{ jt_configure_eda }}"
     job_type: run
     organization: "{{ my_organization }}"
+    inventory: "{{ controller_inventory_localhost }}"
     project: "{{ project_name }}"
     playbook: playbooks/configure_eda.yml
     credentials:
@@ -35,6 +36,7 @@ controller_templates:
   - name: "{{ jt_configure_snow }}"
     job_type: run
     organization: "{{ my_organization }}"
+    inventory: "{{ controller_inventory_localhost }}"
     project: "{{ project_name }}"
     playbook: playbooks/configure_servicenow.yml
     credentials:
