@@ -27,7 +27,6 @@
   gather_facts: false
   connection: local
   vars_files:
-    - files/gateway_organizations.yml
     - files/controller_credential_types.yml
     - files/controller_credentials.yml
     - files/controller_projects.yml
