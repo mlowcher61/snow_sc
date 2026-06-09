@@ -2,5 +2,14 @@
 - name: Configure Event-Driven Ansible for ServiceNow catalog events
   hosts: localhost
   gather_facts: false
+  pre_tasks:
+    - name: Show Configure EDA preflight variable status
+      ansible.builtin.debug:
+        msg:
+          - "Configure EDA playbook reached pre_tasks."
+          - "eda_host defined={{ eda_host is defined and eda_host | string | length > 0 }}"
+          - "eda_username defined={{ eda_username is defined and eda_username | string | length > 0 }}"
+          - "eda_password defined={{ eda_password is defined and eda_password | string | length > 0 }}"
+          - "eda_token defined={{ eda_token is defined and eda_token | string | length > 0 }}"
   roles:
     - role: eda_snow_config
