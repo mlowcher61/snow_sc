@@ -17,6 +17,8 @@
         names: ["{{ project_name }}"]
       - endpoint: inventories
         names: ["{{ controller_inventory_localhost }}"]
+      - endpoint: hosts
+        names: ["{{ controller_host_localhost }}"]
       - endpoint: credential_types
         names: ["{{ cred_type_snow }}", "{{ cred_type_eda_connection }}", "{{ cred_type_eda_token }}"]
       - endpoint: credentials

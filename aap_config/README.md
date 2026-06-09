@@ -22,6 +22,7 @@ aap_config/
     ├── controller_credentials.yml      # the three credentials, filled from env vars
     ├── controller_projects.yml         # this repo as a controller project
     ├── controller_inventories.yml      # localhost inventory used by the job templates
+    ├── controller_hosts.yml            # explicit localhost host with local connection
     ├── controller_job_templates.yml    # Configure EDA + Configure ServiceNow Catalog (+ surveys)
     └── eda_projects.yml                # this repo as an EDA project (rulebook source)
 ```

@@ -31,6 +31,7 @@
     - files/controller_credentials.yml
     - files/controller_projects.yml
     - files/controller_inventories.yml
+    - files/controller_hosts.yml
     - files/controller_job_templates.yml
     - files/eda_projects.yml
   roles:

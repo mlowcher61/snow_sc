@@ -1,0 +1,10 @@
+---
+# Consumed by the infra.aap_configuration.controller_hosts role.
+# Add an explicit localhost target so wrapper playbooks that run on localhost
+# always have a matching inventory host and use local execution in AAP.
+controller_hosts:
+  - name: "{{ controller_host_localhost }}"
+    inventory: "{{ controller_inventory_localhost }}"
+    enabled: true
+    variables:
+      ansible_connection: local

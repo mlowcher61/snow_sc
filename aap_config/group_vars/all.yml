@@ -39,6 +39,7 @@ project_name: "ServiceNow EDA Integration"
 project_scm_url: "{{ lookup('ansible.builtin.env', 'SNOW_SC_SCM_URL') | default('https://github.com/mlowcher61/snow_sc.git', true) }}"
 project_scm_branch: "{{ lookup('ansible.builtin.env', 'SNOW_SC_SCM_BRANCH') | default('main', true) }}"
 controller_inventory_localhost: "Localhost"
+controller_host_localhost: "localhost"
 
 cred_type_snow: "ServiceNow Connection"
 cred_type_eda_connection: "EDA Controller Connection"
