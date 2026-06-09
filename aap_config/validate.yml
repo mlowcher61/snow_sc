@@ -24,7 +24,7 @@
       - endpoint: credentials
         names: ["{{ cred_snow }}", "{{ cred_eda_connection }}", "{{ cred_eda_token }}"]
       - endpoint: job_templates
-        names: ["{{ jt_configure_snow }}", "{{ jt_configure_eda }}"]
+        names: ["{{ jt_smoke_test }}", "{{ jt_configure_snow }}", "{{ jt_configure_eda }}"]
   tasks:
     - name: Flatten the expected objects into (endpoint, name) pairs
       ansible.builtin.set_fact:

@@ -9,6 +9,13 @@
 # are attached here so secrets are supplied at launch, never surveyed or
 # committed.
 controller_templates:
+  - name: "{{ jt_smoke_test }}"
+    job_type: run
+    organization: "{{ my_organization }}"
+    inventory: "{{ controller_inventory_localhost }}"
+    project: "{{ project_name }}"
+    playbook: playbooks/smoke_test.yml
+
   - name: "{{ jt_configure_eda }}"
     job_type: run
     organization: "{{ my_organization }}"

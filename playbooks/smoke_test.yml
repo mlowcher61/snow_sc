@@ -1,0 +1,8 @@
+---
+- name: Verify AAP can run a localhost playbook from this project
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Print a smoke-test message
+      ansible.builtin.debug:
+        msg: "AAP localhost smoke test reached task execution successfully."

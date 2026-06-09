@@ -23,7 +23,7 @@ aap_config/
     ├── controller_projects.yml         # this repo as a controller project
     ├── controller_inventories.yml      # localhost inventory used by the job templates
     ├── controller_hosts.yml            # explicit localhost host with local connection
-    ├── controller_job_templates.yml    # Configure EDA + Configure ServiceNow Catalog (+ surveys)
+    ├── controller_job_templates.yml    # Smoke test + Configure EDA + Configure ServiceNow Catalog (+ surveys)
     └── eda_projects.yml                # this repo as an EDA project (rulebook source)
 ```
 
@@ -60,10 +60,11 @@ Nothing secret is committed, surveyed, or vaulted in this repo.
 
 ## After it runs
 
-1. Launch **Configure EDA** first — note the event stream endpoint it prints.
-2. Launch **Configure ServiceNow Catalog**, supplying that endpoint in the survey.
-3. Build and link the Flow Designer flow: see `../docs/flow_designer_manual_steps.md`.
-4. Order the catalog item, approve it, and confirm the rulebook activation runs your template.
+1. Launch **AAP Localhost Smoke Test** first. If this fails with no output, the issue is in AAP execution, not the solution playbooks.
+2. Launch **Configure EDA** next — note the event stream endpoint it prints.
+3. Launch **Configure ServiceNow Catalog**, supplying that endpoint in the survey.
+4. Build and link the Flow Designer flow: see `../docs/flow_designer_manual_steps.md`.
+5. Order the catalog item, approve it, and confirm the rulebook activation runs your template.
 
 ## Customizing
 
